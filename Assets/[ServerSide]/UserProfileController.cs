@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared;
 using UnityEngine;
@@ -11,6 +15,8 @@ public sealed class UserProfileController : MonoBehaviour
 {
     public static UserProfileController Instance;
 
+    public ClientWebSocket clientSocket;
+
     private void Awake()
     {
         Instance = this;
@@ -18,21 +24,62 @@ public sealed class UserProfileController : MonoBehaviour
 
     private void Start()
     {
-        UIController.Instance.ShowLoading();
+        UIController.Instance.ShowLoading(); 
         InitiateUserCheck();
     }
 
-    private void InitiateUserCheck()
+    private async void InitiateUserCheck()
     {
-        StartCoroutine(GetDataCoroutine());
-        // var localLoginData = PlayerPrefs.GetString("localLogin");
-        //
-        // var request = new LoginWithCustomIDRequest
-        // {
-        //     CustomId = localLoginData
-        // };
-        //     
-        // PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
+        var url = "ws://localhost:5143/ws";
+        var uri = new Uri(@"ws://localhost:5143/ws");
+        var cancellationToken = new CancellationTokenSource();
+        cancellationToken.CancelAfter(5000);
+        
+        Debug.Log("Connecting....");
+
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            using (clientSocket = new ClientWebSocket())
+            {
+                try
+                {
+                    Debug.Log("<color=cyan>WebSocket connecting.</color>");
+                    await clientSocket.ConnectAsync(new Uri(url), cancellationToken.Token);
+
+                    Debug.Log("<color=cyan>WebSocket receiving.</color>");
+                    await Receive();
+
+                    Debug.Log("<color=cyan>WebSocket closed.</color>");
+                    
+                    await clientSocket.ConnectAsync(uri, cancellationToken.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    Debug.Log("<color=cyan>WebSocket shutting down.</color>");
+                }
+            }
+        }
+
+
+        if(clientSocket.State == WebSocketState.Open) Debug.Log("Connected!");
+        else
+        {
+            Debug.Log("Something went wrong :(");
+        }
+    }
+    
+    private async Task Receive()
+    {
+        var arraySegment = new ArraySegment<byte>(new byte[8192]);
+        while (clientSocket.State == WebSocketState.Open)
+        {
+            var result = await clientSocket.ReceiveAsync(arraySegment, CancellationToken.None);
+            if (result.MessageType == WebSocketMessageType.Text)
+            {
+                var message = Encoding.UTF8.GetString(arraySegment.Array, 0, result.Count);
+                // if (OnReceived != null) OnReceived(message);
+            }
+        }
     }
 
     public void NewLogin(string loginName)
@@ -119,7 +166,7 @@ public sealed class UserProfileController : MonoBehaviour
     //GET
     IEnumerator GetDataCoroutine()
     {
-        string url = $"https://193.124.129.94/player/500";
+        string url = $"ws://localhost:5143";
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -134,7 +181,7 @@ public sealed class UserProfileController : MonoBehaviour
             {
                 Debug.Log("Loaded successfully");
                 UIController.Instance.ShowSuccessPanel();
-// outputArea.text = request.downloadHandler.text;
+                // outputArea.text = request.downloadHandler.text;
             }
         }
     }

@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd5986a1-e4a0-4ffe-a332-03467b319314" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.UnityServerClientTest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UnityServerClientTest/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,10 +65,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="8411">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="8411" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -88,7 +87,10 @@
       <workItem from="1686217572652" duration="188000" />
       <workItem from="1686218698578" duration="1246000" />
       <workItem from="1686224790728" duration="3784000" />
-      <workItem from="1686650761989" duration="9933000" />
+      <workItem from="1686650761989" duration="10277000" />
+      <workItem from="1686743846941" duration="545000" />
+      <workItem from="1686828460697" duration="598000" />
+      <workItem from="1686910093240" duration="11403000" />
     </task>
     <servers />
   </component>
@@ -105,26 +107,26 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs</url>
-          <line>149</line>
+          <line>196</line>
           <properties documentPath="$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs" initialLine="149" containingFunctionPresentation="method 'PostDataCoroutine'">
             <startOffsets>
-              <option value="4437" />
+              <option value="6036" />
             </startOffsets>
             <endOffsets>
-              <option value="4480" />
+              <option value="6079" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs</url>
-          <line>155</line>
+          <line>202</line>
           <properties documentPath="$PROJECT_DIR$/Assets/[ServerSide]/UserProfileController.cs" initialLine="155" containingFunctionPresentation="method 'PostDataCoroutine'">
             <startOffsets>
-              <option value="4672" />
+              <option value="6271" />
             </startOffsets>
             <endOffsets>
-              <option value="4900" />
+              <option value="6499" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="2" />
