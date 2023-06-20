@@ -30,8 +30,8 @@ public sealed class UserProfileController : MonoBehaviour
 
     private async void InitiateUserCheck()
     {
-        var url = "ws://localhost:5143/ws";
-        var uri = new Uri(@"ws://localhost:5143/ws");
+        // var url = "localhost:5143";
+        var uri = new Uri(@"ws://193.124.129.94:5143");
         var cancellationToken = new CancellationTokenSource();
         cancellationToken.CancelAfter(5000);
         
@@ -44,14 +44,15 @@ public sealed class UserProfileController : MonoBehaviour
                 try
                 {
                     Debug.Log("<color=cyan>WebSocket connecting.</color>");
-                    await clientSocket.ConnectAsync(new Uri(url), cancellationToken.Token);
+                    // clientSocket.Options.SetRequestHeader("Connection", "Upgrade");
+                    // clientSocket.Options.SetRequestHeader("Upgrade", "Upgrade");
+                    clientSocket.Options.AddSubProtocol("Tls");
+                    await clientSocket.ConnectAsync(uri, cancellationToken.Token);
 
                     Debug.Log("<color=cyan>WebSocket receiving.</color>");
                     await Receive();
 
                     Debug.Log("<color=cyan>WebSocket closed.</color>");
-                    
-                    await clientSocket.ConnectAsync(uri, cancellationToken.Token);
                 }
                 catch (OperationCanceledException)
                 {
