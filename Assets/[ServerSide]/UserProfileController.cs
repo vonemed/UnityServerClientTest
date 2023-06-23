@@ -6,7 +6,6 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Shared;
 using UnityEngine;
 using UnityEngine.Networking;
 
