@@ -48,7 +48,7 @@ public sealed class UIController : MonoBehaviour
         languageSelectionPanel.SetActive(true);
     }
 
-    public void CheckInputField()
+    public async void CheckInputField()
     {
         if (string.IsNullOrEmpty(inputLoginTxt.text))
         {
@@ -56,13 +56,14 @@ public sealed class UIController : MonoBehaviour
         }
         else
         {
-            UserProfileController.Instance.NewLogin(inputLoginTxt.text);
+            await UserProfileController.Instance.NewLogin(inputLoginTxt.text);
+            ShowLoginPanel();
         }
     }
 
     public void ChangeName()
     {
-        UserProfileController.Instance.ChangeName(inputChangeNameTxt.text);
+        // UserProfileController.Instance.ChangeName(inputChangeNameTxt.text);
     }
 
     private void HideEverything()
