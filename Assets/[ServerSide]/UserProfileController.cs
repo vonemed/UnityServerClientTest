@@ -6,6 +6,7 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SharedLibrary.Packets;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -30,7 +31,8 @@ public sealed class UserProfileController : MonoBehaviour
     private async void InitiateUserCheck()
     {
         // var url = "localhost:5143";
-        var uri = new Uri(@"ws://193.124.129.94:5143");
+        // var uri = new Uri(@"ws://193.124.129.94:5143");
+        var uri = new Uri(@"ws://localhost:5143/ws");
         var cancellationToken = new CancellationTokenSource();
         cancellationToken.CancelAfter(5000);
         
@@ -43,13 +45,12 @@ public sealed class UserProfileController : MonoBehaviour
                 try
                 {
                     Debug.Log("<color=cyan>WebSocket connecting.</color>");
-                    // clientSocket.Options.SetRequestHeader("Connection", "Upgrade");
-                    // clientSocket.Options.SetRequestHeader("Upgrade", "Upgrade");
                     clientSocket.Options.AddSubProtocol("Tls");
                     await clientSocket.ConnectAsync(uri, cancellationToken.Token);
 
-                    Debug.Log("<color=cyan>WebSocket receiving.</color>");
-                    await Receive();
+                    Debug.Log("<color=cyan>WebSocket sending.</color>");
+                    await Send();
+                    // await Receive();
 
                     Debug.Log("<color=cyan>WebSocket closed.</color>");
                 }
@@ -82,9 +83,27 @@ public sealed class UserProfileController : MonoBehaviour
         }
     }
 
+    private async Task Send()
+    {
+        var package = new PacketContainer
+        {
+            Key = "LoginRequest",
+            Data = ""
+        };
+
+        var packedPackage = JsonConvert.SerializeObject(package);
+        
+        ArraySegment<byte> bytesToSend = new ArraySegment<byte>(Encoding.UTF8.GetBytes(packedPackage));
+        
+        if (clientSocket.State == WebSocketState.Open)
+        {
+            await clientSocket.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+    }
+
     public void NewLogin(string loginName)
     {
-        StartCoroutine(PostDataCoroutine(loginName));
+        // StartCoroutine(PostDataCoroutine(loginName));
         // if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
         // {
         //     PlayFabSettings.staticSettings.TitleId = "BE28C";
@@ -107,7 +126,7 @@ public sealed class UserProfileController : MonoBehaviour
 
     public void ChangeName(string newName)
     {
-        StartCoroutine(PostDataCoroutine(newName));
+        // StartCoroutine(PostDataCoroutine(newName));
 
         // var requestNameChange = new UpdateUserTitleDisplayNameRequest
         // {
@@ -164,54 +183,54 @@ public sealed class UserProfileController : MonoBehaviour
     #endregion
 
     //GET
-    IEnumerator GetDataCoroutine()
-    {
-        string url = $"ws://localhost:5143";
-
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
-        {
-            yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-            {
-                Debug.Log("Error occured");
-                Debug.Log($"{request.error}");
-                OnLoginFailure();
-            }
-            else
-            {
-                Debug.Log("Loaded successfully");
-                UIController.Instance.ShowSuccessPanel();
-                // outputArea.text = request.downloadHandler.text;
-            }
-        }
-    }
+    // IEnumerator GetDataCoroutine()
+    // {
+    //     string url = $"ws://localhost:5143";
+    //
+    //     using (UnityWebRequest request = UnityWebRequest.Get(url))
+    //     {
+    //         yield return request.SendWebRequest();
+    //         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //         {
+    //             Debug.Log("Error occured");
+    //             Debug.Log($"{request.error}");
+    //             OnLoginFailure();
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("Loaded successfully");
+    //             UIController.Instance.ShowSuccessPanel();
+    //             // outputArea.text = request.downloadHandler.text;
+    //         }
+    //     }
+    // }
 
     //POST
-    IEnumerator PostDataCoroutine(string name)
-    {
-        name = "101";
-        string url = "https://localhost:7232/player";
-        // // WWWForm form = new WWWForm();
-        // var plyr = new Player();
-        int Id = 101;
-        var data = JsonConvert.SerializeObject(Id);
-        // form.AddField("Id", 101);
-
-        List<IMultipartFormSection> wwwForm = new List<IMultipartFormSection>();
-        wwwForm.Add(new MultipartFormDataSection("id", name));
-
-        var request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST)
-        {
-            uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(data)),
-            downloadHandler = new DownloadHandlerBuffer()
-        };
-
-        request.uploadHandler.contentType = "application/json";
-        
-        yield return request.SendWebRequest();
-        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
-            OnError(request);
-        else
-            Debug.Log("Data has been sent");
-    }
+    // IEnumerator PostDataCoroutine(string name)
+    // {
+    //     name = "101";
+    //     string url = "https://localhost:7232/player";
+    //     // // WWWForm form = new WWWForm();
+    //     // var plyr = new Player();
+    //     int Id = 101;
+    //     var data = JsonConvert.SerializeObject(Id);
+    //     // form.AddField("Id", 101);
+    //
+    //     List<IMultipartFormSection> wwwForm = new List<IMultipartFormSection>();
+    //     wwwForm.Add(new MultipartFormDataSection("id", name));
+    //
+    //     var request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST)
+    //     {
+    //         uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(data)),
+    //         downloadHandler = new DownloadHandlerBuffer()
+    //     };
+    //
+    //     request.uploadHandler.contentType = "application/json";
+    //     
+    //     yield return request.SendWebRequest();
+    //     if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+    //         OnError(request);
+    //     else
+    //         Debug.Log("Data has been sent");
+    // }
 }
