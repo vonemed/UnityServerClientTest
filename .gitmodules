@@ -1,0 +1,3 @@
+[submodule "Assets/SharedLibrary"]
+	path = Assets/SharedLibrary
+	url = https://github.com/vonemed/SharedLibrary.git
